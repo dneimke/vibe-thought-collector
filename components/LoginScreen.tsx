@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrainCircuitIcon } from './icons';
-import { signInWithGoogle } from '../services/firebase';
+import { signInWithGoogle, getGoogleRedirectResult } from '../services/firebase';
 
 const LoginScreen: React.FC = () => {
+
+  useEffect(() => {
+    const checkRedirect = async () => {
+      try {
+        await getGoogleRedirectResult();
+        // Successful redirect login is handled by onAuthStateChanged in App.tsx
+      } catch (error: any) {
+        console.error("Error handling redirect login", error);
+        if (error.code === 'auth/unauthorized-domain') {
+          const inIframe = window.self !== window.top;
+          let message = "Sign-in Error: This domain is not authorized for authentication.\n\n" +
+            "To fix this, please follow these steps:\n" +
+            "1. Go to your Firebase Console.\n" +
+            "2. Navigate to Authentication > Settings > Authorized domains.\n" +
+            "3. Click 'Add domain' and add: " + window.location.hostname;
+          
+          alert(message);
+        } else {
+          // Ignore null errors which mean no redirect happened
+          if (error) alert("Login failed: " + error.message);
+        }
+      }
+    };
+    
+    checkRedirect();
+  }, []);
 
   const handleSignIn = async () => {
     try {

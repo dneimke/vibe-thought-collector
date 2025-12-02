@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { initializeApp } from "firebase/app"; 
 import { 
   getAuth, 
@@ -5,6 +6,7 @@ import {
   signInWithRedirect, 
   signOut,
   onAuthStateChanged,
+  getRedirectResult,
   User
 } from "firebase/auth";
 import { 
@@ -28,12 +30,12 @@ import { Thought, FavoriteSummary } from '../types';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAWk02vPsuHw-RzThUvvX0QdF4meZNJ2Pk",
-  authDomain: "thought-collector.firebaseapp.com",
-  projectId: "thought-collector",
-  storageBucket: "thought-collector.firebasestorage.app",
-  messagingSenderId: "1098709209149",
-  appId: "1:1098709209149:web:a02f8190da6039f7ccda54"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 
@@ -47,6 +49,7 @@ const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = () => signInWithRedirect(auth, googleProvider);
 export const signOutUser = () => signOut(auth);
+export const getGoogleRedirectResult = () => getRedirectResult(auth);
 export const onAuthStateChangedListener = (callback: (user: User | null) => void) => 
   onAuthStateChanged(auth, callback);
 
