@@ -1,43 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrainCircuitIcon } from './icons';
-import { signInWithGoogle, getGoogleRedirectResult } from '../services/firebase';
+import { signInWithGoogle } from '../services/firebase';
 
 const LoginScreen: React.FC = () => {
 
-  useEffect(() => {
-    const checkRedirect = async () => {
-      try {
-        await getGoogleRedirectResult();
-        // Successful redirect login is handled by onAuthStateChanged in App.tsx
-      } catch (error: any) {
-        console.error("Error handling redirect login", error);
-        if (error.code === 'auth/unauthorized-domain') {
-          const inIframe = window.self !== window.top;
+  const handleSignIn = async () => {
+    console.log("Initiating Google Sign In (Popup)...");
+    try {
+      await signInWithGoogle();
+      console.log("Sign in successful");
+    } catch (error: any) {
+      console.error("Error signing in with Google", error);
+      if (error.code === 'auth/popup-closed-by-user') {
+         // User closed the popup, no need to alert
+         return;
+      }
+      if (error.code === 'auth/unauthorized-domain') {
           let message = "Sign-in Error: This domain is not authorized for authentication.\n\n" +
             "To fix this, please follow these steps:\n" +
             "1. Go to your Firebase Console.\n" +
             "2. Navigate to Authentication > Settings > Authorized domains.\n" +
             "3. Click 'Add domain' and add: " + window.location.hostname;
-          
           alert(message);
-        } else {
-          // Ignore null errors which mean no redirect happened
-          if (error) alert("Login failed: " + error.message);
-        }
+      } else {
+          alert(`Login Error: ${error.message} (${error.code})`);
       }
-    };
-    
-    checkRedirect();
-  }, []);
-
-  const handleSignIn = async () => {
-    console.log("Initiating Google Sign In...");
-    try {
-      await signInWithGoogle();
-      console.log("Sign in redirect initiated");
-    } catch (error: any) {
-      console.error("Error signing in with Google", error);
-      alert(`Login Error: ${error.message} (${error.code})`);
     }
   };
 

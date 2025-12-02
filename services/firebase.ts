@@ -3,10 +3,9 @@ import { initializeApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider, 
-  signInWithRedirect, 
+  signInWithPopup, 
   signOut,
   onAuthStateChanged,
-  getRedirectResult,
   User
 } from "firebase/auth";
 import { 
@@ -47,9 +46,8 @@ const googleProvider = new GoogleAuthProvider();
 
 // --- AUTHENTICATION ---
 
-export const signInWithGoogle = () => signInWithRedirect(auth, googleProvider);
+export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
 export const signOutUser = () => signOut(auth);
-export const getGoogleRedirectResult = () => getRedirectResult(auth);
 export const onAuthStateChangedListener = (callback: (user: User | null) => void) => 
   onAuthStateChanged(auth, callback);
 
