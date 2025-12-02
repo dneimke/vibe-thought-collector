@@ -31,33 +31,13 @@ const LoginScreen: React.FC = () => {
   }, []);
 
   const handleSignIn = async () => {
+    console.log("Initiating Google Sign In...");
     try {
       await signInWithGoogle();
+      console.log("Sign in redirect initiated");
     } catch (error: any) {
       console.error("Error signing in with Google", error);
-      if (error.code === 'auth/unauthorized-domain') {
-        // Check if running inside an iframe, a common scenario for AI Studio
-        const inIframe = window.self !== window.top;
-        
-        let message = "Sign-in Error: This domain is not authorized for authentication.\n\n" +
-          "To fix this, please follow these steps:\n" +
-          "1. Go to your Firebase Console.\n" +
-          "2. Navigate to Authentication > Settings > Authorized domains.\n" +
-          "3. Click 'Add domain' and add the domain where this app is hosted.";
-        
-        if (inIframe) {
-            message += "\n\nSince you may be running in an embedded environment like AI Studio, the domain you need to add is likely:\n\n" +
-                       "aistudio.google.com";
-        } else if (window.location.hostname) {
-            message += "\n\nThe current domain is: " + window.location.hostname;
-        } else {
-            message += "\n\nThe app could not automatically detect the domain. Please check your browser's address bar or add 'aistudio.google.com' if running in AI Studio.";
-        }
-    
-        alert(message);
-      } else {
-        alert("There was an issue signing in. Please try again.");
-      }
+      alert(`Login Error: ${error.message} (${error.code})`);
     }
   };
 
