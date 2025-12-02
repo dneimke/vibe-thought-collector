@@ -1,0 +1,7 @@
+{
+  "name": "Thought Collector",
+  "description": "A smart application to capture, organize, and rediscover your thoughts and ideas. Use voice or text to instantly save your thoughts, and let AI automatically categorize and title them for easy retrieval.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
